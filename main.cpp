@@ -1,5 +1,8 @@
+
+
 #include <iostream>
 #include <string>
+#include <random>
 
 using namespace std;
 
@@ -112,20 +115,67 @@ void SearchBooksByAuthor(const Book library[], int numBooks, const string& searc
     }
 }
 
+int randomNumber(int min, int max) {
+        // Create a random number generator
+    random_device rd;  // Used to obtain a random seed
+    mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+
+    // Define the range
+    uniform_int_distribution<int> distribution(min, max);
+
+    // Generate a random number between 0 and 6
+    int randomNum = distribution(gen);
+    return randomNum;
+}
+
+
+
+void AddBooks(int c, Book library[], int& numBooks) {
+    string fakeTitle;
+    string fakeAuth;
+    Genre fakeGen;
+    int fakeYear;
+    
+    for (int i=0; i < c; i++){
+        string n = to_string(i);
+        int x = randomNumber(0,6);
+        string a = to_string(x);
+        fakeTitle = "Book " + n;
+        fakeAuth = "Author " + a;
+        int y = randomNumber(1990,2022);
+        fakeYear = y;
+        
+        library[numBooks].yearOfPublication = fakeYear;
+        library[numBooks].title = fakeTitle;
+        library[numBooks].author = fakeAuth;
+        // Validate the genre input
+        if (x >= 0 && x <= 4) {
+            library[numBooks].genre = static_cast<Genre>(x);
+        } else {
+            library[numBooks].genre = Genre::Fiction;
+        }
+        numBooks++;
+        
+    }
+    
+}
+
 int main() {
     const int MAX_BOOKS = 50;
     Book library[MAX_BOOKS];
     int numBooks = 0;
     string searchAuthor; // Declare searchAuthor outside the switch block
-
+    int lineCounter = 0;
+    string k;
+    
     while (true) {
         cout << "Library Management System Menu:" << endl;
         cout << "1. Add a book" << endl;
         cout << "2. List all books" << endl;
         cout << "3. Search books by genre" << endl;
         cout << "4. Search books by author" << endl;
-        cout << "5. Quit" << endl;
-
+        cout << "5. Add multiple fake books" << endl;
+        cout << "6. Quit" << endl;
         int choice;
         cout << "Enter your choice: ";
         cin >> choice;
@@ -161,6 +211,12 @@ int main() {
                 SearchBooksByAuthor(library, numBooks, searchAuthor);
                 break;
             case 5:
+                int count;
+                cout << "How many Fake books would you like to add?" << endl;
+                cin >> count;
+                AddBooks (count, library, numBooks);
+                break;
+            case 6:
                 cout << "Goodbye!" << endl;
                 return 0;
             default:
